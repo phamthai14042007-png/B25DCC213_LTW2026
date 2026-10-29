@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 import Layout from "./components/Layouts";
 import Home from "./pages/Home";
@@ -18,6 +18,15 @@ function App() {
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const [playerName, setPlayerName] = useState("");
+  const navigate = useNavigate();
+
+  const handleStart = () => {
+    if (playerName.trim()) {
+      navigate("/play");
+   }
+  };
 
   useEffect(() => {
     const controller = new AbortController();
@@ -49,8 +58,26 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="play" element={<Play />} />
+        <Route
+          index
+          element={
+            <Home
+              playerName={playerName}
+              setPlayerName={setPlayerName}
+              onStart={handleStart}
+            />
+          }
+        />
+        <Route
+          path="play"
+          element={
+            playerName.trim() ? (
+              <Play questions={questions} playerName={playerName} />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         <Route path="result" element={<Result />} />
         <Route path="history" element={<History />} />
 
