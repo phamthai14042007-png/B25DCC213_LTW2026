@@ -237,3 +237,45 @@ td a:hover {
     grid-template-columns: 1fr;
   }
 }
+
+.lifelines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.audience-chart {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.audience-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.audience-label {
+  width: 65px;
+  flex-shrink: 0;
+  font-weight: bold;
+}
+
+.audience-bar-container {
+  flex: 1;
+  height: 24px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.audience-bar {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 0.3s ease;
+}

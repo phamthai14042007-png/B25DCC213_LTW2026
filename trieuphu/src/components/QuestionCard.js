@@ -7,6 +7,7 @@ const QuestionCard = ({
   onAnswer,
   selectedAnswer,
   status,
+  hiddenAnswers,
 }) => {
   if (!question) {
     return <p>Không tìm thấy câu hỏi.</p>;
@@ -19,6 +20,7 @@ const QuestionCard = ({
 
       <div className="answer-grid">
         {question.options.map((option, index) => {
+          const isHidden = hiddenAnswers.includes(index);
           let className = "";
 
           if (selectedAnswer === index && status === "locked") {
@@ -39,9 +41,9 @@ const QuestionCard = ({
             <AnswerButton
               key={index}
               letter={LETTERS[index]}
-              option={option}
+              option={isHidden ? "" : option}
               onClick={() => onAnswer(index)}
-              disabled={status !== "answering"}
+              disabled={status !== "answering" || isHidden}
               className={className}
             />
           );

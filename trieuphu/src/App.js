@@ -20,6 +20,15 @@ function App() {
   const [error, setError] = useState(false);
 
   const [playerName, setPlayerName] = useState("");
+  const [history, setHistory] = useState(() => {
+    try {
+      return JSON.parse(
+        localStorage.getItem("ltw_trieuphu_history")
+      ) || [];
+    } catch {
+      return [];
+    }
+  });
   const navigate = useNavigate();
 
   const handleStart = () => {
@@ -27,6 +36,22 @@ function App() {
       navigate("/play");
    }
   };
+  const handleClearHistory = () => {
+    setHistory([]);
+  };
+  
+const handleGameEnd = (result) => {
+  const record = {
+    id: `${Date.now()}-${Math.random()}`,
+    name: result.playerName,
+    prize: result.prize,
+    correctCount: result.correctCount,
+    playedAt: new Date().toLocaleString("vi-VN"),
+  };
+
+  setHistory((previousHistory) => [...previousHistory, record]);
+};
+
 
   useEffect(() => {
     const controller = new AbortController();
@@ -54,10 +79,26 @@ function App() {
       controller.abort();
     };
   }, []);
+  
+useEffect(() => {
+  localStorage.setItem(
+    "ltw_trieuphu_history",
+    JSON.stringify(history)
+  );
+}, [history]);
+
 
   return (
     <Routes>
-      <Route path="/" element={<Layout />}>
+      <Route
+        path="/"
+        element={
+          <Layout
+            history={history}
+            onClearHistory={handleClearHistory}
+          />
+        }
+      >
         <Route
           index
           element={
@@ -65,6 +106,7 @@ function App() {
               playerName={playerName}
               setPlayerName={setPlayerName}
               onStart={handleStart}
+              history={history}
             />
           }
         />
@@ -72,7 +114,11 @@ function App() {
           path="play"
           element={
             playerName.trim() ? (
-              <Play questions={questions} playerName={playerName} />
+              <Play 
+                questions={questions}
+                playerName={playerName}
+                onGameEnd={handleGameEnd}
+              />
             ) : (
               <Navigate to="/" replace />
             )
