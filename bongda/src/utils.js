@@ -117,3 +117,43 @@ export const calcMatchStats = (matches) => {
     counts,
   };
 };
+
+
+export const calcNeeded = (standings, teamId, target, remaining) => {
+  const team = standings.find(
+    (item) => item.id === Number(teamId)
+  );
+
+  if (!team || target === '' || remaining === '') {
+    return 'Hãy chọn đội, nhập số điểm mục tiêu (từ 0) và số trận còn lại (từ 1)';
+  }
+
+  const targetPoints = Number(target);
+  const remainingMatches = Number(remaining);
+
+  if (
+    !Number.isInteger(targetPoints) ||
+    targetPoints < 0 ||
+    !Number.isInteger(remainingMatches) ||
+    remainingMatches < 1
+  ) {
+    return 'Hãy chọn đội, nhập số điểm mục tiêu (từ 0) và số trận còn lại (từ 1)';
+  }
+
+  const need = targetPoints - team.points;
+
+  if (need <= 0) {
+    return 'Đội đã đạt mục tiêu';
+  }
+
+  if (need > 3 * remainingMatches) {
+    return 'Không thể đạt mục tiêu này';
+  }
+
+  const wins = Math.max(
+    0,
+    Math.ceil((need - remainingMatches) / 2)
+  );
+
+  return `Cần thêm ${need} điểm ở ${remainingMatches} trận còn lại, tối thiểu ${wins} trận thắng`;
+};
